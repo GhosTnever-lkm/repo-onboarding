@@ -1,0 +1,30 @@
+{
+  "name": "repo-onboarding",
+  "version": "1.0.0",
+  "description": "Understand an unfamiliar codebase quickly with a structured, evidence-backed walkthrough.",
+  "author": {
+    "name": "GhosTnever"
+  },
+  "homepage": "https://github.com/GhosTnever-lkm/repo-onboarding",
+  "repository": "https://github.com/GhosTnever-lkm/repo-onboarding",
+  "license": "MIT",
+  "keywords": [
+    "codex",
+    "developer-tools",
+    "repo-onboarding"
+  ],
+  "interface": {
+    "displayName": "Repository Onboarding",
+    "longDescription": "Understand an unfamiliar codebase quickly with a structured, evidence-backed walkthrough.",
+    "capabilities": [
+      "Read",
+      "Write"
+    ],
+    "developerName": "GhosTnever",
+    "shortDescription": "Understand an unfamiliar codebase quickly with a structured, evidence-backed walkthrough.",
+    "category": "Developer Tools"
+  },
+  "skills": [
+    "./skills/repo-tour"
+  ]
+}
