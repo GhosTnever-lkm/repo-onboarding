@@ -1,0 +1,20 @@
+{
+  "name": "repo-onboarding",
+  "interface": {
+    "displayName": "repo-onboarding Marketplace"
+  },
+  "plugins": [
+    {
+      "name": "repo-onboarding",
+      "policy": {
+        "authentication": "ON_INSTALL",
+        "installation": "AVAILABLE"
+      },
+      "category": "Developer Tools",
+      "source": {
+        "source": "local",
+        "path": "./"
+      }
+    }
+  ]
+}
