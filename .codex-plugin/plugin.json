@@ -1,6 +1,6 @@
 {
   "name": "repo-onboarding",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Understand an unfamiliar codebase quickly with a structured, evidence-backed walkthrough.",
   "author": {
     "name": "GhosTnever"
