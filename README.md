@@ -2,13 +2,13 @@
 
 > Evidence-based tours for unfamiliar codebases.
 
-Current version: **1.0.2**.
+Current version: **1.0.3**.
 
 ## Install in Codex
 
 Add this repository as a plugin marketplace, then install the plugin:
 
-    codex plugin marketplace add GhosTnever-lkm/repo-onboarding@v1.0.2
+    codex plugin marketplace add GhosTnever-lkm/repo-onboarding@v1.0.3
     codex plugin add repo-onboarding --marketplace repo-onboarding
 
 To inspect configured marketplaces, run `codex plugin marketplace list`. To confirm that the plugin is installed, run `codex plugin list`. Codex may ask you to restart or reload plugins before the skill becomes available.
@@ -23,7 +23,7 @@ The plugin instructions live in `skills/` and are included in the marketplace so
 
 ## Scope
 
-This focused Codex plugin has no external service, background process, or credential requirement. See the skill file for its workflow and limits.
+This focused Codex plugin is read-only: it maps repository structure and documentation without changing files or running project code. It has no external service, background process, or credential requirement. See the skill file for its workflow and limits.
 
 ## ☕ Support / Pro Version
 

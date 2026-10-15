@@ -1,6 +1,6 @@
 {
   "name": "repo-onboarding",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Understand an unfamiliar codebase quickly with a structured, evidence-backed walkthrough.",
   "author": {
     "name": "GhosTnever"
@@ -17,8 +17,7 @@
     "displayName": "Repository Onboarding",
     "longDescription": "Understand an unfamiliar codebase quickly with a structured, evidence-backed walkthrough.",
     "capabilities": [
-      "Read",
-      "Write"
+      "Read"
     ],
     "developerName": "GhosTnever",
     "shortDescription": "Understand an unfamiliar codebase quickly with a structured, evidence-backed walkthrough.",
