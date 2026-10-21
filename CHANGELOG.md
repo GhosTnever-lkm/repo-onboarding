@@ -4,7 +4,7 @@
 
 - Add a dependency-free `scripts/validate.mjs` check for VERSION, plugin manifest, skill frontmatter, marketplace entry, README install pin, CHANGELOG entry, and full MIT license text.
 - Add 7 Node.js tests for the validator, including version drift, missing or escaping skill paths, invalid JSON, and truncated licenses.
-- Add CI on Ubuntu and Windows (Node.js 22) for pushes, tags, and pull requests.
+- Add CI on Ubuntu and Windows (Node.js 22) for pushes, tags, and pull requests, using `node --test` auto-discovery so it works on Node.js 20 and 22.
 - Pin the marketplace installation instructions to v1.0.4.
 
 ## 1.0.3 — 2026-10-15

@@ -39,7 +39,7 @@ The repository includes a dependency-free consistency check (Node.js 20 or newer
 
 ```sh
 node scripts/validate.mjs   # VERSION, manifest, skills, marketplace, README pin, CHANGELOG, LICENSE
-node --test test/           # validator tests
+node --test                 # validator tests (auto-discovers test/*.test.mjs)
 ```
 
 CI runs both commands on Ubuntu and Windows for every push, tag, and pull request.

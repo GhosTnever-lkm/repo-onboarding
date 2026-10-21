@@ -24,4 +24,4 @@ jobs:
       - name: Validate plugin manifest, skills, and release metadata
         run: node scripts/validate.mjs
       - name: Run tests
-        run: node --test test/
+        run: node --test
