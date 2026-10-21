@@ -2,13 +2,13 @@
 
 > Evidence-based tours for unfamiliar codebases.
 
-Current version: **1.0.3**.
+Current version: **1.0.4**.
 
 ## Install in Codex
 
 Add this repository as a plugin marketplace, then install the plugin:
 
-    codex plugin marketplace add GhosTnever-lkm/repo-onboarding@v1.0.3
+    codex plugin marketplace add GhosTnever-lkm/repo-onboarding@v1.0.4
     codex plugin add repo-onboarding --marketplace repo-onboarding
 
 To inspect configured marketplaces, run `codex plugin marketplace list`. To confirm that the plugin is installed, run `codex plugin list`. Codex may ask you to restart or reload plugins before the skill becomes available.
@@ -32,3 +32,14 @@ The plugin is free and open source under MIT. No separate Pro version is current
 ## License
 
 MIT. See [LICENSE](LICENSE).
+
+## Development
+
+The repository includes a dependency-free consistency check (Node.js 20 or newer):
+
+```sh
+node scripts/validate.mjs   # VERSION, manifest, skills, marketplace, README pin, CHANGELOG, LICENSE
+node --test test/           # validator tests
+```
+
+CI runs both commands on Ubuntu and Windows for every push, tag, and pull request.

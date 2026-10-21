@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.4 — 2026-10-21
+
+- Add a dependency-free `scripts/validate.mjs` check for VERSION, plugin manifest, skill frontmatter, marketplace entry, README install pin, CHANGELOG entry, and full MIT license text.
+- Add 7 Node.js tests for the validator, including version drift, missing or escaping skill paths, invalid JSON, and truncated licenses.
+- Add CI on Ubuntu and Windows (Node.js 22) for pushes, tags, and pull requests.
+- Pin the marketplace installation instructions to v1.0.4.
+
 ## 1.0.3 — 2026-10-15
 
 - Restrict the plugin's declared capability to Read, matching its inspection-only repository tour workflow.
