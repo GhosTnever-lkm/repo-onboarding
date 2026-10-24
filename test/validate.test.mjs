@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { cpSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { cpSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -47,6 +47,19 @@ test('detects a missing skill directory', () => withCopy((dir) => {
 test('rejects skill paths outside the repository', () => withCopy((dir) => {
   edit(dir, '.codex-plugin/plugin.json', (t) => { const j = JSON.parse(t); j.skills = ['../outside']; return JSON.stringify(j); });
   assert.ok(codes(validate(dir)).includes('SKILL_PATH'));
+}));
+
+test('rejects skill directories that resolve through a symlink outside the repository', () => withCopy((dir) => {
+  const outside = mkdtempSync(path.join(tmpdir(), 'outside-skill-'));
+  try {
+    writeFileSync(path.join(outside, 'SKILL.md'), '---\nname: external\ndescription: external fixture\n---\n');
+    symlinkSync(outside, path.join(dir, 'skills', 'external'), process.platform === 'win32' ? 'junction' : 'dir');
+    edit(dir, '.codex-plugin/plugin.json', (t) => { const j = JSON.parse(t); j.skills = ['./skills/external']; return JSON.stringify(j); });
+    const result = validate(dir);
+    assert.ok(codes(result).includes('SKILL_PATH'), JSON.stringify(result.errors));
+  } finally {
+    rmSync(outside, { recursive: true, force: true });
+  }
 }));
 
 test('rejects invalid JSON and missing files without crashing', () => withCopy((dir) => {

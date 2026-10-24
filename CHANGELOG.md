@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.5 - 2026-10-25
+
+- Reject skill directories and `SKILL.md` files whose resolved symlink targets escape the repository.
+- Add a regression test for an external skill-directory symlink.
+
 ## 1.0.4 — 2026-10-21
 
 - Add a dependency-free `scripts/validate.mjs` check for VERSION, plugin manifest, skill frontmatter, marketplace entry, README install pin, CHANGELOG entry, and full MIT license text.

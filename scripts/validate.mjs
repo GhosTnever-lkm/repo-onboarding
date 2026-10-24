@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Dependency-free consistency check for a single-plugin Codex repository.
 // Node.js >= 20. Usage: node scripts/validate.mjs [repoRoot]
-import { readFileSync, existsSync, statSync } from 'node:fs';
+import { readFileSync, existsSync, realpathSync, statSync } from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
 import { fileURLToPath } from 'node:url';
@@ -44,6 +44,17 @@ function inside(root, rel) {
   return !path.isAbsolute(rel) && r !== '..' && !r.startsWith(`..${path.sep}`) ? abs : null;
 }
 
+function resolvesInside(root, candidate) {
+  try {
+    const realRoot = realpathSync(root);
+    const realCandidate = realpathSync(candidate);
+    const relative = path.relative(realRoot, realCandidate);
+    return relative === '' || (!path.isAbsolute(relative) && relative !== '..' && !relative.startsWith(`..${path.sep}`));
+  } catch {
+    return false;
+  }
+}
+
 export function validate(rootArg = process.cwd()) {
   const root = path.resolve(rootArg);
   const errors = [];
@@ -71,8 +82,11 @@ export function validate(rootArg = process.cwd()) {
       for (const rel of manifest.skills) {
         const abs = typeof rel === 'string' && rel ? inside(root, rel) : null;
         if (!abs) { errors.push({ code: 'SKILL_PATH', message: `Skill path must be a relative path inside the repository: ${JSON.stringify(rel)}` }); continue; }
+        if (!existsSync(abs) || !statSync(abs).isDirectory()) { errors.push({ code: 'SKILL_MISSING', message: `Skill directory or SKILL.md not found: ${rel}` }); continue; }
+        if (!resolvesInside(root, abs)) { errors.push({ code: 'SKILL_PATH', message: `Skill path resolves outside the repository: ${JSON.stringify(rel)}` }); continue; }
         const skillMd = path.join(abs, 'SKILL.md');
-        if (!existsSync(abs) || !statSync(abs).isDirectory() || !existsSync(skillMd)) { errors.push({ code: 'SKILL_MISSING', message: `Skill directory or SKILL.md not found: ${rel}` }); continue; }
+        if (!existsSync(skillMd)) { errors.push({ code: 'SKILL_MISSING', message: `Skill directory or SKILL.md not found: ${rel}` }); continue; }
+        if (!resolvesInside(root, skillMd)) { errors.push({ code: 'SKILL_PATH', message: `Skill file resolves outside the repository: ${JSON.stringify(`${rel}/SKILL.md`)}` }); continue; }
         const fm = parseFrontmatter(readFileSync(skillMd, 'utf8'));
         if (!fm) { errors.push({ code: 'SKILL_FRONTMATTER', message: `${rel}/SKILL.md has no valid YAML frontmatter` }); continue; }
         for (const field of ['name', 'description']) {
