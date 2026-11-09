@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { cpSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
+import { cpSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
+import { spawnSync } from 'node:child_process';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -30,6 +31,31 @@ test('this repository passes its own plugin checks', () => {
   assert.deepEqual(r.errors, []);
   assert.equal(r.ok, true);
 });
+
+test('CLI checks its own checkout when run from another directory', () => withCopy((dir) => {
+  rmSync(path.join(dir, 'VERSION'));
+  const result = spawnSync(process.execPath, [path.join(root, 'scripts/validate.mjs')], { cwd: dir, encoding: 'utf8' });
+  assert.equal(result.status, 0, result.stderr);
+  assert.ok(result.stdout.includes(`OK: ${root} passed all plugin checks.`));
+}));
+
+test('CLI honors an explicit checkout relative to the working directory', () => withCopy((dir) => {
+  rmSync(path.join(dir, 'VERSION'));
+  const result = spawnSync(process.execPath, [path.join(root, 'scripts/validate.mjs'), path.basename(dir)], { cwd: path.dirname(dir), encoding: 'utf8' });
+  assert.equal(result.status, 1, result.stderr);
+  assert.ok(result.stderr.includes(`in ${dir}`));
+  assert.ok(result.stderr.includes('[MISSING_FILE] Missing required file: VERSION'));
+}));
+
+test('CLI reports a directory named SKILL.md without a stack trace', () => withCopy((dir) => {
+  const skill = path.join(dir, 'skills/repo-tour/SKILL.md');
+  rmSync(skill);
+  mkdirSync(skill);
+  const result = spawnSync(process.execPath, [path.join(root, 'scripts/validate.mjs'), dir], { encoding: 'utf8' });
+  assert.equal(result.status, 1, result.stderr);
+  assert.ok(result.stderr.includes('[SKILL_MISSING] Expected a regular file: ./skills/repo-tour/SKILL.md'));
+  assert.ok(!result.stderr.includes('EISDIR'), result.stderr);
+}));
 
 test('detects manifest version drift', () => withCopy((dir) => {
   edit(dir, 'VERSION', () => '9.9.9\n');

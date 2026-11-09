@@ -8,6 +8,7 @@ import { fileURLToPath } from 'node:url';
 
 const SEMVER = /^\d+\.\d+\.\d+(?:[-+][0-9A-Za-z.-]+)?$/;
 const REQUIRED = ['VERSION', 'README.md', 'CHANGELOG.md', 'LICENSE', '.codex-plugin/plugin.json', '.agents/plugins/marketplace.json'];
+const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
 function read(root, rel) {
   return readFileSync(path.join(root, rel), 'utf8').replace(/^\uFEFF/, '');
@@ -55,7 +56,7 @@ function resolvesInside(root, candidate) {
   }
 }
 
-export function validate(rootArg = process.cwd()) {
+export function validate(rootArg = REPO_ROOT) {
   const root = path.resolve(rootArg);
   const errors = [];
   for (const rel of REQUIRED) {
@@ -87,6 +88,7 @@ export function validate(rootArg = process.cwd()) {
         const skillMd = path.join(abs, 'SKILL.md');
         if (!existsSync(skillMd)) { errors.push({ code: 'SKILL_MISSING', message: `Skill directory or SKILL.md not found: ${rel}` }); continue; }
         if (!resolvesInside(root, skillMd)) { errors.push({ code: 'SKILL_PATH', message: `Skill file resolves outside the repository: ${JSON.stringify(`${rel}/SKILL.md`)}` }); continue; }
+        if (!statSync(skillMd).isFile()) { errors.push({ code: 'SKILL_MISSING', message: `Expected a regular file: ${rel}/SKILL.md` }); continue; }
         const fm = parseFrontmatter(readFileSync(skillMd, 'utf8'));
         if (!fm) { errors.push({ code: 'SKILL_FRONTMATTER', message: `${rel}/SKILL.md has no valid YAML frontmatter` }); continue; }
         for (const field of ['name', 'description']) {
@@ -122,7 +124,7 @@ export function validate(rootArg = process.cwd()) {
 }
 
 function main() {
-  const result = validate(process.argv[2] || process.cwd());
+  const result = validate(process.argv[2]);
   if (result.ok) { console.log(`OK: ${result.root} passed all plugin checks.`); return 0; }
   console.error(`FAILED: ${result.errors.length} problem(s) in ${result.root}`);
   for (const e of result.errors) console.error(`  [${e.code}] ${e.message}`);
