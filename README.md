@@ -42,4 +42,6 @@ node scripts/validate.mjs   # VERSION, manifest, skills, marketplace, README pin
 node --test                 # validator tests (auto-discovers test/*.test.mjs)
 ```
 
+The validator checks its own checkout regardless of your working directory. To check another checkout, pass its path: `node scripts/validate.mjs /path/to/checkout`. Relative checkout paths are resolved from your working directory. Run `node --test` from this repository's root.
+
 CI runs both commands on Ubuntu and Windows for every push, tag, and pull request.
